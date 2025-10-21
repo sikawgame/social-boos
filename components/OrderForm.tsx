@@ -130,7 +130,8 @@ const OrderForm: React.FC<OrderFormProps> = ({ onStartPayment, isAuthenticated, 
                 <div className="mb-6">
                     <label className="block text-lg font-bold mb-3 text-gray-300">اختر المنصة</label>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {Object.values(platforms).map((p) => (
+                        {/* FIX: Add explicit type to 'p' to resolve properties on 'unknown' type error. */}
+                        {Object.values(platforms).map((p: Platform) => (
                             <button key={p.id} onClick={() => handlePlatformChange(p.id)} className={`p-4 rounded-lg transition-all duration-300 text-center font-semibold border-2 ${platform === p.id ? 'bg-brand-primary border-brand-primary text-white shadow-lg' : 'bg-gray-700 border-gray-600 hover:border-brand-primary'}`}>
                                 {p.name}
                             </button>
@@ -142,7 +143,8 @@ const OrderForm: React.FC<OrderFormProps> = ({ onStartPayment, isAuthenticated, 
                 <div className="mb-6">
                     <label className="block text-lg font-bold mb-3 text-gray-300">نوع الخدمة</label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                        {Object.entries(currentPlatform.services).map(([key, s]) => (
+                        {/* FIX: Add explicit type to 's' to resolve properties on 'unknown' type error. */}
+                        {Object.entries(currentPlatform.services).map(([key, s]: [string, Service]) => (
                             <button
                                 key={key}
                                 onClick={() => handleServiceClick(key)}

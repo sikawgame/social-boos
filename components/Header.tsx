@@ -33,6 +33,7 @@ const Header: React.FC<HeaderProps> = ({ setView, isAuthenticated, isAdmin, onLo
     { text: 'اطلب الآن', action: () => handleNavClick('home', '#order') },
     { text: 'كيف نعمل', action: () => handleNavClick('home', '#how-it-works') },
     { text: 'من نحن', action: () => handleNavClick('about') },
+    { text: 'API', action: () => handleNavClick('api') },
   ];
   
   const closeMobileMenu = () => setIsOpen(false);
@@ -109,7 +110,7 @@ const Header: React.FC<HeaderProps> = ({ setView, isAuthenticated, isAdmin, onLo
             >
               <span className="sr-only">فتح القائمة الرئيسية</span>
               {!isOpen ? (
-                <svg className="block h-6 w-6" xmlns="http://www.w.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               ) : (

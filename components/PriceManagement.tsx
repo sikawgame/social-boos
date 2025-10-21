@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import type { Platform, View } from '../types';
+// FIX: Import the 'Service' type to be used for explicit typing.
+import type { Platform, View, Service } from '../types';
 
 interface PriceManagementProps {
     platforms: Record<string, Platform>;
@@ -70,10 +71,12 @@ const PriceManagement: React.FC<PriceManagementProps> = ({ platforms, onUpdatePr
                     </div>
 
                     <div className="space-y-8">
-                        {Object.values(platforms).map(platform => (
+                        {/* FIX: Add explicit type to 'platform' to resolve properties on 'unknown' type error. */}
+                        {Object.values(platforms).map((platform: Platform) => (
                             <SettingsCard key={platform.id} title={platform.name}>
                                 <div className="space-y-4">
-                                    {Object.entries(platform.services).map(([serviceId, service]) => (
+                                    {/* FIX: Add explicit type to 'service' to resolve properties on 'unknown' type error. */}
+                                    {Object.entries(platform.services).map(([serviceId, service]: [string, Service]) => (
                                         <div key={serviceId} className="flex flex-col sm:flex-row items-center justify-between gap-4">
                                             <span className="text-gray-300 font-semibold">{service.name}</span>
                                             <div className="flex items-center gap-2">

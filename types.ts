@@ -1,10 +1,13 @@
+import React from 'react';
+
 // FIX: Centralized shared types to avoid duplication and fix import errors.
-export type View = 'home' | 'payment' | 'dashboard' | 'privacy' | 'terms' | 'about' | 'addFunds' | 'admin' | 'settings' | 'admin/prices' | 'admin/payments' | 'admin/funds';
+export type View = 'home' | 'payment' | 'dashboard' | 'privacy' | 'terms' | 'about' | 'addFunds' | 'admin' | 'settings' | 'admin/prices' | 'admin/payments' | 'admin/funds' | 'api';
 export type AuthModalView = 'login' | 'signup' | 'forgotPassword';
 export interface User {
   name: string;
   email: string;
   balance: number;
+  apiKey: string;
   profilePicture?: string;
 }
 
@@ -18,6 +21,7 @@ export interface Service {
 export interface Platform {
   id: string;
   name: string;
+  // FIX: Import React to use React.ReactNode type.
   icon: React.ReactNode;
   services: Record<string, Service>;
   placeholder: string;

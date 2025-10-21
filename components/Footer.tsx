@@ -1,7 +1,8 @@
 import React from 'react';
+import type { View } from '../types';
 
 interface FooterProps {
-  setView: (view: 'home' | 'privacy' | 'terms' | 'about') => void;
+  setView: (view: View) => void;
 }
 
 const Footer: React.FC<FooterProps> = ({ setView }) => {
@@ -21,6 +22,7 @@ const Footer: React.FC<FooterProps> = ({ setView }) => {
               <li><a href="#order" onClick={(e) => { e.preventDefault(); setView('home'); document.querySelector('#order')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-brand-primary transition-colors">اطلب الآن</a></li>
               <li><a href="#how-it-works" onClick={(e) => { e.preventDefault(); setView('home'); document.querySelector('#how-it-works')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-brand-primary transition-colors">كيف نعمل</a></li>
               <li><button onClick={() => setView('about')} className="hover:text-brand-primary transition-colors text-right w-full">من نحن</button></li>
+              <li><button onClick={() => setView('api')} className="hover:text-brand-primary transition-colors text-right w-full">API للمطورين</button></li>
             </ul>
           </div>
           <div>

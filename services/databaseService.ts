@@ -18,6 +18,7 @@ interface User {
   email: string;
   passwordHash: string; // In a real app, this would be a hash, not plaintext
   balance: number;
+  apiKey: string;
   profilePicture?: string;
 }
 
@@ -40,6 +41,8 @@ const setToStorage = <T>(key: string, value: T): void => {
     console.error(`Error setting localStorage key “${key}”:`, error);
   }
 };
+
+const generateApiKey = () => `SB-KEY-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
 
 // --- Database Initialization ---
 const initPricesDB = () => {
@@ -72,6 +75,7 @@ export const initDB = () => {
       email: 'test@example.com',
       passwordHash: 'password123', // WARNING: Storing plaintext passwords is insecure. This is for simulation only.
       balance: 50.00,
+      apiKey: generateApiKey(),
       profilePicture: undefined,
     };
      const adminUser = {
@@ -79,6 +83,7 @@ export const initDB = () => {
       email: 'admin@example.com',
       passwordHash: 'admin123',
       balance: 9999.00,
+      apiKey: generateApiKey(),
       profilePicture: undefined,
     };
     users = [defaultUser, adminUser];
@@ -155,7 +160,7 @@ export const registerUser = (name: string, email: string, password: string): { s
     return { success: false, message: 'هذا البريد الإلكتروني مسجل بالفعل.' };
   }
 
-  const newUser: User = { name, email: email.toLowerCase(), passwordHash: password, balance: 0, profilePicture: undefined };
+  const newUser: User = { name, email: email.toLowerCase(), passwordHash: password, balance: 0, apiKey: generateApiKey(), profilePicture: undefined };
   users.push(newUser);
   setToStorage(DB_USERS_KEY, users);
   const { passwordHash, ...userForApp } = newUser;
@@ -317,6 +322,12 @@ export const updateUserPassword = (email: string, currentPassword: string, newPa
 
 export const updateUserProfilePicture = (email: string, pictureDataUrl: string): { success: boolean; user?: AppUser } => {
     const updatedUser = updateAndRefreshSession(email, { profilePicture: pictureDataUrl });
+    return { success: !!updatedUser, user: updatedUser || undefined };
+};
+
+export const regenerateApiKey = (email: string): { success: boolean; user?: AppUser } => {
+    const newApiKey = generateApiKey();
+    const updatedUser = updateAndRefreshSession(email, { apiKey: newApiKey });
     return { success: !!updatedUser, user: updatedUser || undefined };
 };
 
@@ -596,4 +607,14 @@ export const markMessagesAsReadForUser = (userEmail: string): void => {
     if (changed) {
         setToStorage(DB_MESSAGES_KEY, updatedMessages);
     }
+};
+
+// --- API Service Functions (to be called by the API layer) ---
+export const getUserByApiKey = (apiKey: string): AppUser | null => {
+    if (!apiKey || !apiKey.startsWith('SB-KEY-')) return null;
+    const users = getFromStorage<User[]>(DB_USERS_KEY, []);
+    const user = users.find(u => u.apiKey === apiKey);
+    if (!user) return null;
+    const { passwordHash, ...userForApi } = user;
+    return userForApi;
 };

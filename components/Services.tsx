@@ -15,7 +15,8 @@ const Services: React.FC<ServicesProps> = ({ platforms }) => {
           <div className="mt-4 w-24 h-1 bg-brand-primary mx-auto rounded-full"></div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {Object.values(platforms).map((platform) => (
+          {/* FIX: Add explicit type to 'platform' to resolve properties on 'unknown' type error. */}
+          {Object.values(platforms).map((platform: Platform) => (
             <div key={platform.id} className="text-center p-6 bg-brand-card rounded-xl shadow-lg hover:shadow-brand-primary/30 transition-shadow duration-300 transform hover:-translate-y-2">
               {platform.icon}
               <h3 className="text-xl font-bold mt-2 text-white">{platform.name}</h3>

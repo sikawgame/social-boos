@@ -8,6 +8,7 @@ interface SettingsProps {
     onUpdatePassword: (currentPassword: string, newPassword: string) => boolean;
     onUpdateProfilePicture: (pictureDataUrl: string) => void;
     onUpdateEmail: (newEmail: string, password: string) => boolean;
+    onRegenerateApiKey: () => void;
 }
 
 const SettingsCard: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
@@ -22,7 +23,7 @@ const SettingsCard: React.FC<{ title: string; children: React.ReactNode }> = ({ 
 );
 
 
-const Settings: React.FC<SettingsProps> = ({ user, setView, onUpdateName, onUpdatePassword, onUpdateProfilePicture, onUpdateEmail }) => {
+const Settings: React.FC<SettingsProps> = ({ user, setView, onUpdateName, onUpdatePassword, onUpdateProfilePicture, onUpdateEmail, onRegenerateApiKey }) => {
     // State for forms
     const [name, setName] = useState(user.name);
     const [currentPassword, setCurrentPassword] = useState('');
@@ -31,6 +32,7 @@ const Settings: React.FC<SettingsProps> = ({ user, setView, onUpdateName, onUpda
     const [profilePicture, setProfilePicture] = useState<string | null>(null);
     const [newEmail, setNewEmail] = useState('');
     const [confirmPasswordForEmail, setConfirmPasswordForEmail] = useState('');
+    const [copied, setCopied] = useState(false);
 
 
     const handleNameSubmit = (e: React.FormEvent) => {
@@ -90,6 +92,19 @@ const Settings: React.FC<SettingsProps> = ({ user, setView, onUpdateName, onUpda
         if (success) {
             setNewEmail('');
             setConfirmPasswordForEmail('');
+        }
+    };
+
+    const handleCopyApiKey = () => {
+        navigator.clipboard.writeText(user.apiKey).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        });
+    };
+
+    const handleRegenerateApiKey = () => {
+        if (window.confirm('هل أنت متأكد أنك تريد إنشاء مفتاح API جديد؟ سيتم إبطال مفتاحك الحالي على الفور.')) {
+            onRegenerateApiKey();
         }
     };
     
@@ -257,6 +272,29 @@ const Settings: React.FC<SettingsProps> = ({ user, setView, onUpdateName, onUpda
                                     </button>
                                 </div>
                             </form>
+                        </SettingsCard>
+                        
+                        {/* API Key Settings */}
+                        <SettingsCard title="مفتاح API">
+                            <p className="text-gray-400 mb-4">استخدم هذا المفتاح للمصادقة على طلبات API الخاصة بك. حافظ عليه سراً!</p>
+                            <div className="flex items-center gap-4 bg-gray-900 p-3 rounded-lg">
+                                <input
+                                    type="text"
+                                    readOnly
+                                    value={user.apiKey}
+                                    className="flex-grow bg-transparent text-gray-300 font-mono focus:outline-none"
+                                />
+                                <button onClick={handleCopyApiKey} className="text-gray-400 hover:text-white">
+                                    {copied ? 'تم النسخ!' : (
+                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                    )}
+                                </button>
+                            </div>
+                             <div className="mt-4 text-left">
+                                <button onClick={handleRegenerateApiKey} className="bg-red-600 text-white font-semibold py-2 px-6 rounded-md hover:bg-opacity-90">
+                                    إنشاء مفتاح جديد
+                                </button>
+                            </div>
                         </SettingsCard>
                     </div>
                 </div>

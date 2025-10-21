@@ -21,6 +21,7 @@ import PriceManagement from './components/PriceManagement';
 import PaymentManagement from './components/PaymentManagement';
 import FundRequestManagement from './components/FundRequestManagement';
 import NotificationContainer from './components/NotificationContainer';
+import ApiDocs from './components/ApiDocs';
 import { notificationService } from './services/notificationService';
 import { 
     initDB, 
@@ -51,6 +52,7 @@ import {
     sendMessageToUser,
     getMessagesForUser,
     markMessagesAsReadForUser,
+    regenerateApiKey,
 } from './services/databaseService';
 // FIX: Import View and User from the centralized types file and remove local definitions.
 import type { OrderDetails, Order, View, User, Platform, Notification, PaymentSettings, FundTransferRequest, Message } from './types';
@@ -383,6 +385,18 @@ const App: React.FC = () => {
     return false;
 };
 
+    const handleRegenerateApiKey = () => {
+        if (currentUser) {
+            const result = regenerateApiKey(currentUser.email);
+            if (result.success && result.user) {
+                setCurrentUser(result.user);
+                alert("تم إنشاء مفتاح API جديد بنجاح. تم إبطال مفتاحك القديم.");
+            } else {
+                alert("فشل إنشاء مفتاح API جديد.");
+            }
+        }
+    };
+
 // --- Message Handlers ---
   const handleMarkMessagesAsRead = () => {
     if (currentUser) {
@@ -450,6 +464,7 @@ const App: React.FC = () => {
                 onUpdatePassword={handleUpdateUserPassword}
                 onUpdateProfilePicture={handleUpdateUserProfilePicture}
                 onUpdateEmail={handleUpdateUserEmail}
+                onRegenerateApiKey={handleRegenerateApiKey}
             />
          ) : <Hero />;
       case 'admin':
@@ -519,6 +534,8 @@ const App: React.FC = () => {
         return <TermsOfService setView={setView} />;
       case 'about':
         return <AboutUs setView={setView} />;
+      case 'api':
+        return <ApiDocs setView={setView} />;
       case 'home':
       default:
         return (
